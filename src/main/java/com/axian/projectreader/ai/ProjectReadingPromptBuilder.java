@@ -1,6 +1,9 @@
 package com.axian.projectreader.ai;
 
+import com.axian.projectreader.api.ProjectQuestionRequest;
 import com.axian.projectreader.api.ProjectReadingRequest;
+import com.axian.projectreader.domain.ProjectContext;
+import com.axian.projectreader.domain.SourceFileContext;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -40,5 +43,63 @@ public class ProjectReadingPromptBuilder {
                 request.projectTree(),
                 request.configSnippet() == null ? "" : request.configSnippet()
         );
+    }
+
+    public String buildQuestionPrompt(ProjectQuestionRequest request, ProjectContext context) {
+        return """
+                You are an AI code reading assistant.
+
+                User question:
+                %s
+
+                Project context:
+                Project name: %s
+                Root path: %s
+
+                README:
+                %s
+
+                Build file:
+                %s
+
+                Project tree:
+                %s
+
+                Key source files:
+                %s
+
+                Answer rules:
+                1. Only answer from the provided context.
+                2. If context is not enough, say exactly what is missing.
+                3. Start with a short answer.
+                4. Then list related files.
+                5. Then explain the logic trace from entry to output.
+                6. End with the next file or action the learner should inspect.
+                """.formatted(
+                request.question(),
+                context.projectName(),
+                context.rootPath(),
+                context.readme(),
+                context.buildFile(),
+                context.projectTree(),
+                sourceFileText(context)
+        );
+    }
+
+    private String sourceFileText(ProjectContext context) {
+        return context.sourceFiles()
+                .stream()
+                .map(this::sourceFileText)
+                .reduce((left, right) -> left + "\n\n" + right)
+                .orElse("");
+    }
+
+    private String sourceFileText(SourceFileContext sourceFile) {
+        return """
+                File: %s
+                Role: %s
+                Content:
+                %s
+                """.formatted(sourceFile.path(), sourceFile.role(), sourceFile.contentPreview());
     }
 }

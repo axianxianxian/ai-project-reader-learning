@@ -41,6 +41,25 @@ v0.1 先跑通完整工程链路，不急着做复杂 agent：
 - 明确保留 Spring AI 接入点
 - 配套学习文档，帮助我讲清楚每一层
 
+## v0.2 范围
+
+v0.2 开始加入“自动读码”的第一块能力：
+
+- 一个 `/api/project-reading/scan` 接口：输入本地项目路径，输出 `ProjectContext`
+- 一个 `/api/project-reading/analyze-local` 接口：扫描本地项目后生成阅读报告
+- 一个 `/api/project-reading/ask` 接口：基于扫描到的上下文回答项目问题
+- 一个 `LocalProjectScanner` 工具：读取 README、pom/build 文件、目录树和关键 Java 文件
+
+这一步还不是完整 agent，但已经开始具备 agent 的基础形态：
+
+```text
+用户问题
+-> 工具读取本地项目
+-> 组织项目上下文
+-> 构造问答 prompt
+-> AI Gateway 返回结构化答案
+```
+
 ## 为什么先用 Mock AI
 
 因为这个项目是学习版。
@@ -66,6 +85,22 @@ curl -X POST http://localhost:8080/api/project-reading/analyze \
   -d @samples/project-input.json
 ```
 
+扫描本地项目：
+
+```bash
+curl -X POST http://localhost:8080/api/project-reading/scan \
+  -H "Content-Type: application/json" \
+  -d @samples/local-project-request.json
+```
+
+对本地项目提问：
+
+```bash
+curl -X POST http://localhost:8080/api/project-reading/ask \
+  -H "Content-Type: application/json" \
+  -d @samples/project-question-request.json
+```
+
 ## 目录结构
 
 ```text
@@ -79,7 +114,8 @@ docs
 ├── 01-goal.md
 ├── 02-ten-day-plan.md
 ├── 03-ai-chain.md
-└── 04-spring-ai-next.md
+├── 04-spring-ai-next.md
+└── 05-local-scan-and-qa.md
 ```
 
 ## 学习验收标准
@@ -96,7 +132,8 @@ docs
 ## 下一步
 
 1. v0.1：Mock AI 跑通项目阅读报告。
-2. v0.2：接入 Spring AI ChatClient。
-3. v0.3：加入本地知识规则和 tool calling。
-4. v0.4：加入简单 RAG，支持按项目文档检索。
-5. v0.5：沉淀成作品集说明和面试讲述版本。
+2. v0.2：本地项目扫描 + 基于上下文问答。
+3. v0.3：接入 Spring AI ChatClient。
+4. v0.4：加入本地知识规则和 tool calling。
+5. v0.5：加入简单 RAG，支持按项目文档检索。
+6. v0.6：沉淀成作品集说明和面试讲述版本。
