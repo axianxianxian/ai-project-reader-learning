@@ -1,0 +1,7 @@
+{
+  "projectName": "spring-ai-example",
+  "learningGoal": "I want to understand the main AI engineering chain and explain it in interviews.",
+  "readme": "This project demonstrates a Spring AI application with chat, structured output, and tool calling.",
+  "projectTree": "pom.xml\nsrc/main/java/demo/App.java\nsrc/main/java/demo/controller/ChatController.java\nsrc/main/java/demo/service/AiService.java\nsrc/main/resources/application.yml",
+  "configSnippet": "spring.ai.openai.chat.options.model=gpt-4.1-mini"
+}

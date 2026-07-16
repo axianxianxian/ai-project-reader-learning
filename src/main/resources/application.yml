@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: ai-project-reader-learning
+
+server:
+  port: 8080
