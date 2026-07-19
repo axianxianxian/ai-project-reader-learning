@@ -683,6 +683,7 @@
           <a href="#flow">端到端链路 <small>8 min</small></a>
           <a href="#files">关键文件 <small>6 min</small></a>
           <a href="#risks">注意事项 <small>3 min</small></a>
+          <a href="#today">今天路线 <small>10 min</small></a>
         </nav>
 
         <div class="panel-head">
@@ -803,6 +804,40 @@
             <div id="riskList">
               <p>不要一上来重构页面或接真实模型。先确认本地路径输入、扫描、mock AI 报告、问答这条链路能跑通。</p>
             </div>
+          </section>
+
+          <section class="section reader-pane" id="today" hidden>
+            <h2>今天路线：写完这些就收工</h2>
+            <p>今天不要继续扩资料，也不要换框架。你只需要把“我现在到底在做什么”写清楚，然后让页面能支撑这条主线。</p>
+
+            <h3>今天只看 3 个东西</h3>
+            <ol id="todayReadList">
+              <li><strong>当前页面：</strong>确认它像一个能展示的产品，而不是接口测试页。</li>
+              <li><strong>AI 工程参考地图：</strong>只看第一屏和“当前阶段只做什么”。</li>
+              <li><strong>Spring AI 接入点：</strong>只看 `AiGateway`、`MockAiGateway`、`SpringAiGateway` 三个类。</li>
+            </ol>
+
+            <h3>今天写完这 4 句话就算结束</h3>
+            <ol id="todayWriteList">
+              <li>我这个项目要证明什么 AI 工程能力？</li>
+              <li>为什么主线先押 Spring AI，而不是到处看框架？</li>
+              <li>为什么现在先做结构化输出和本地项目扫描？</li>
+              <li>这个 demo 打开后，别人能看到什么？</li>
+            </ol>
+
+            <h3>今天不做</h3>
+            <ul>
+              <li>不继续刷新的 repo。</li>
+              <li>不追 multi-agent、复杂图谱和 MCP 深水区。</li>
+              <li>不因为页面还不完美就推翻重做。</li>
+              <li>不把资料全部读完才允许自己继续。</li>
+            </ul>
+
+            <pre>今日收工标准：
+打开 localhost 页面
+能说清项目主线
+写完 4 句话
+知道下一步是 Spring AI 真实接入</pre>
           </section>
         </article>
       </main>
@@ -1042,7 +1077,10 @@
         ...Array.from(readingPathList.querySelectorAll("li")).map(item => `- ${item.textContent}`),
         "",
         "## 怎么最快跑起来",
-        ...Array.from(demoPlanList.querySelectorAll("li")).map(item => `- ${item.textContent}`)
+        ...Array.from(demoPlanList.querySelectorAll("li")).map(item => `- ${item.textContent}`),
+        "",
+        "## 今天路线",
+        ...Array.from(document.querySelectorAll("#todayWriteList li")).map(item => `- ${item.textContent}`)
       ].join("\n");
       const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
       const url = URL.createObjectURL(blob);
