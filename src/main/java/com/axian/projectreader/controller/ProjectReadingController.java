@@ -8,12 +8,14 @@ import com.axian.projectreader.model.ProjectQuestionAnswer;
 import com.axian.projectreader.model.ProjectReadingReport;
 import com.axian.projectreader.service.ProjectReadingService;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/project-reading")
 public class ProjectReadingController {
 
