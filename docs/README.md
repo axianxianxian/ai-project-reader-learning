@@ -42,3 +42,4 @@
 - `01-delivery-plan.md`：两周排期和一个月目标
 - `02-risk-register.md`：风险表
 - `03-project-focus.md`：项目重点和取舍
+- `04-30-day-public-build-plan.md`：30 天公开构建计划和每日发布主线
