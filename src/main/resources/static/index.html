@@ -265,6 +265,7 @@
       color: var(--text);
       text-decoration: none;
       font-size: 14px;
+      cursor: pointer;
     }
 
     .toc a.active {
@@ -850,6 +851,11 @@
     const messages = document.querySelector("#messages");
     const questionInput = document.querySelector("#questionInput");
     const topQuestionInput = document.querySelector("#topQuestionInput");
+    const reader = document.querySelector(".reader");
+    const tocLinks = Array.from(document.querySelectorAll(".toc a"));
+    const readableSections = tocLinks
+      .map(link => document.querySelector(link.getAttribute("href")))
+      .filter(Boolean);
 
     function setStatus(text, failed = false) {
       demoStatus.textContent = text;
@@ -864,6 +870,24 @@
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+    }
+
+    function activateToc(targetId) {
+      tocLinks.forEach(link => {
+        const isActive = link.getAttribute("href") === `#${targetId}`;
+        link.classList.toggle("active", isActive);
+      });
+    }
+
+    function jumpToSection(targetId) {
+      const target = document.querySelector(`#${targetId}`);
+      if (!target) {
+        return;
+      }
+
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      activateToc(targetId);
+      history.replaceState(null, "", `#${targetId}`);
     }
 
     async function postJson(path, body) {
@@ -1015,6 +1039,36 @@
       link.click();
       URL.revokeObjectURL(url);
     });
+
+    tocLinks.forEach(link => {
+      link.addEventListener("click", event => {
+        event.preventDefault();
+        const targetId = link.getAttribute("href").slice(1);
+        jumpToSection(targetId);
+      });
+    });
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(entries => {
+        const visible = entries
+          .filter(entry => entry.isIntersecting)
+          .sort((left, right) => right.intersectionRatio - left.intersectionRatio)[0];
+
+        if (visible) {
+          activateToc(visible.target.id);
+        }
+      }, {
+        root: reader,
+        threshold: [0.35, 0.6]
+      });
+
+      readableSections.forEach(section => observer.observe(section));
+    }
+
+    const initialTargetId = location.hash ? location.hash.slice(1) : "overview";
+    if (document.querySelector(`#${initialTargetId}`)) {
+      activateToc(initialTargetId);
+    }
   </script>
 </body>
 </html>
