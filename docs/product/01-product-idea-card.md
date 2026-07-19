@@ -200,7 +200,7 @@
 
 在本项目里怎么找：
 
-- 打开 `docs/08-day1-idea-card.md`
+- 打开 `docs/product/01-product-idea-card.md`
 - 搜索：`Codebase Explainer`
 - 它是本项目 Day 1 的第一个竞品字帖
 

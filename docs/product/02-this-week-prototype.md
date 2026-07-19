@@ -124,11 +124,11 @@
 
 旧版学习台原型：
 
-`prototypes/hot-read-assistant-v0.html`
+`prototypes/learning/hot-read-assistant-v0.html`
 
 新版工程阅读器原型：
 
-`prototypes/project-reader-v0.html`
+`prototypes/reader/project-reader-v0.html`
 
 当前标记：
 

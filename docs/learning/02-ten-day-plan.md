@@ -17,7 +17,7 @@
 - 给每个类补一段“为什么存在”。
 - 写第一篇学习笔记。
 
-产出：`docs/03-ai-chain.md` 完整版。
+产出：`docs/architecture/01-ai-chain.md` 完整版。
 
 ## Day 3：结构化输出
 

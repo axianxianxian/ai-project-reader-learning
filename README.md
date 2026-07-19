@@ -1,8 +1,10 @@
 # AI Project Reader Learning
 
-一个学习版 AI 项目阅读助手。
+一个学习版 AI 工程阅读器。
 
-这个项目的目标不是先做一个很大的产品，而是用一个足够小、五脏俱全的应用，把 AI 工程链路吃透：
+这个项目的产品目标是：让用户输入一个项目路径后，得到一份可以直接阅读的工程说明书，并能基于项目上下文继续追问。
+
+这个项目的学习目标是：用一个足够小、五脏俱全的应用，把 AI 工程链路吃透：
 
 ```text
 用户输入
@@ -23,7 +25,7 @@
 - 框架概念很多，比如 Spring AI、tool calling、structured output、RAG、agent workflow，看起来都懂，但不能串起来。
 - 看资料容易被淹没，最后没有一个可讲、可运行、可复盘的成果。
 
-这个项目把“读项目”这件事变成一个 AI 助手流程：
+这个项目把“读项目”这件事变成一个工程阅读器流程：
 
 1. 输入 README、项目目录、配置片段、当前目标。
 2. AI 先生成一份项目阅读报告。
@@ -111,11 +113,29 @@ src/main/java/com/axian/projectreader
 └── domain     # 结构化输出模型
 
 docs
-├── 01-goal.md
-├── 02-ten-day-plan.md
-├── 03-ai-chain.md
-├── 04-spring-ai-next.md
-└── 05-local-scan-and-qa.md
+├── product       # 对外产品资料
+├── architecture  # 工程链路和 AI 接入方案
+├── learning      # 个人学习计划和复盘
+└── handoff       # 阶段交接记录
+
+prototypes
+├── reader        # 对外工程阅读器原型
+└── learning      # 个人学习草稿原型
+
+samples           # API 请求样例
+tools             # 辅助脚本
+```
+
+当前主原型：
+
+```text
+prototypes/reader/project-reader-v0.html
+```
+
+旧学习草稿原型保留在：
+
+```text
+prototypes/learning/hot-read-assistant-v0.html
 ```
 
 ## 学习验收标准
