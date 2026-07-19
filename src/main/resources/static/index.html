@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>工程阅读器 v0 原型</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --surface: #ffffff;
+      --surface-2: #f9fafb;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --soft: #9ca3af;
+      --line: #e5e7eb;
+      --green: #0f766e;
+      --green-2: #ecfdf5;
+      --blue: #1d4ed8;
+      --blue-2: #eff6ff;
+      --amber: #a16207;
+      --amber-2: #fffbeb;
+      --code: #111827;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 58px minmax(0, 1fr);
+    }
+
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto auto;
+      align-items: center;
+      gap: 16px;
+      padding: 0 22px;
+    }
+
+    .repo-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--green);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 850;
+      flex: 0 0 auto;
+    }
+
+    .repo-name {
+      min-width: 0;
+    }
+
+    .repo-name strong {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 15px;
+    }
+
+    .repo-name span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .demo-panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 0 0 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .demo-panel h2 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .field input {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 10px;
+      background: var(--surface-2);
+      color: var(--text);
+      outline: none;
+    }
+
+    .primary-action {
+      min-height: 38px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 760;
+      cursor: pointer;
+      padding: 0 14px;
+      white-space: nowrap;
+    }
+
+    .status-line {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .search {
+      width: min(460px, 38vw);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .search input {
+      border: 0;
+      outline: 0;
+      background: transparent;
+      padding: 9px 11px;
+      min-width: 0;
+      color: var(--text);
+    }
+
+    .search button,
+    .toolbar button {
+      border: 0;
+      border-left: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      padding: 0 12px;
+      min-height: 36px;
+      cursor: pointer;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toolbar button {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      white-space: nowrap;
+    }
+
+    .layout {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 268px minmax(0, 1fr) 360px;
+    }
+
+    .sidebar,
+    .qa {
+      background: var(--surface);
+      min-height: 0;
+      overflow: auto;
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--line);
+    }
+
+    .reader {
+      min-width: 0;
+      min-height: 0;
+      overflow: auto;
+      padding: 26px 32px 40px;
+    }
+
+    .qa {
+      border-left: 1px solid var(--line);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+    }
+
+    .panel-head {
+      padding: 15px 16px 11px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 13px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0;
+    }
+
+    .panel-head p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .toc {
+      padding: 10px;
+      display: grid;
+      gap: 2px;
+    }
+
+    .toc a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 34px;
+      padding: 0 10px;
+      border-radius: 8px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .toc a.active {
+      background: var(--green-2);
+      color: var(--green);
+      font-weight: 730;
+    }
+
+    .toc small {
+      color: var(--soft);
+      font-size: 11px;
+    }
+
+    .files {
+      padding: 12px 10px 18px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .file-row {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 9px;
+      display: grid;
+      gap: 4px;
+      background: var(--surface-2);
+    }
+
+    .file-row strong {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .file-row span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .article {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    .article-header {
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .pill.good {
+      background: var(--green-2);
+      border-color: #b7e4d7;
+      color: var(--green);
+    }
+
+    .pill.warn {
+      background: var(--amber-2);
+      border-color: #fde68a;
+      color: var(--amber);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .read-map {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 22px 0;
+    }
+
+    .map-item {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 13px;
+    }
+
+    .map-item b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--green);
+      font-size: 15px;
+    }
+
+    .map-item span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      margin: 14px 0;
+    }
+
+    .section h2 {
+      margin: 0 0 12px;
+      font-size: 19px;
+      letter-spacing: 0;
+    }
+
+    .section h3 {
+      margin: 16px 0 8px;
+      font-size: 15px;
+    }
+
+    .section p,
+    .section li {
+      color: var(--muted);
+      line-height: 1.72;
+      font-size: 14px;
+    }
+
+    .section p {
+      margin: 0 0 10px;
+    }
+
+    .section ul,
+    .section ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .steps {
+      display: grid;
+      gap: 10px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+    }
+
+    .step b {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: var(--blue-2);
+      color: var(--blue);
+      font-size: 12px;
+    }
+
+    .step div {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+    }
+
+    .step strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    .step span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    pre {
+      margin: 12px 0 0;
+      padding: 14px;
+      background: var(--code);
+      color: #d1fae5;
+      border-radius: 8px;
+      overflow: auto;
+      font-size: 13px;
+      line-height: 1.65;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .qa-scope {
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .scope-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 28px;
+      padding: 0 8px;
+      border-radius: 8px;
+      background: var(--blue-2);
+      color: var(--blue);
+      font-size: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .messages {
+      padding: 14px;
+      overflow: auto;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .msg {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px 12px;
+      line-height: 1.6;
+      font-size: 14px;
+      background: var(--surface);
+    }
+
+    .msg.user {
+      background: var(--green-2);
+      border-color: #b7e4d7;
+      color: #064e3b;
+    }
+
+    .msg strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .msg small {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .quick {
+      display: grid;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .quick button {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 8px;
+      min-height: 34px;
+      text-align: left;
+      padding: 0 10px;
+      cursor: pointer;
+    }
+
+    .composer {
+      padding: 12px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 8px;
+      background: var(--surface-2);
+    }
+
+    .composer textarea {
+      width: 100%;
+      min-height: 72px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      outline: none;
+      background: var(--surface);
+    }
+
+    .composer button {
+      min-height: 38px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 760;
+      cursor: pointer;
+    }
+
+    @media (max-width: 1160px) {
+      .layout {
+        grid-template-columns: 250px minmax(0, 1fr);
+      }
+
+      .qa {
+        grid-column: 1 / -1;
+        border-left: 0;
+        border-top: 1px solid var(--line);
+        min-height: 520px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        grid-template-columns: 1fr;
+        height: auto;
+        padding: 12px;
+      }
+
+      .search {
+        width: 100%;
+      }
+
+      .toolbar {
+        width: 100%;
+      }
+
+      .toolbar button {
+        flex: 1;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .reader {
+        padding: 20px 14px 26px;
+      }
+
+      .read-map {
+        grid-template-columns: 1fr;
+      }
+
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="repo-title">
+        <div class="logo">R</div>
+        <div class="repo-name">
+          <strong id="projectNameText">ai-project-reader-learning</strong>
+          <span id="statusText">本地 mock demo，先跑通真实操作闭环</span>
+        </div>
+      </div>
+
+      <form class="search" id="topQuestionForm">
+        <input id="topQuestionInput" value="如果我是第一次接手这个项目，今天只看 30 分钟，应该怎么看？" aria-label="向项目提问">
+        <button type="submit">提问</button>
+      </form>
+
+      <div class="toolbar">
+        <button type="button" id="exportButton">导出 .md</button>
+        <button type="button" id="reanalyzeButton">重新分析</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="panel-head">
+          <h2>阅读目录</h2>
+          <p>先按章节读，遇到问题再问右侧助手。</p>
+        </div>
+        <nav class="toc">
+          <a class="active" href="#overview">项目概览 <small>2 min</small></a>
+          <a href="#run">怎么跑起来 <small>5 min</small></a>
+          <a href="#flow">端到端链路 <small>8 min</small></a>
+          <a href="#files">关键文件 <small>6 min</small></a>
+          <a href="#risks">注意事项 <small>3 min</small></a>
+        </nav>
+
+        <div class="panel-head">
+          <h2>证据文件</h2>
+          <p>回答默认引用这些文件，用户也可以加更多上下文。</p>
+        </div>
+        <div class="files">
+          <div class="file-row evidence-file">
+            <strong>README.md</strong>
+            <span>项目定位、部署方式、主要能力。</span>
+          </div>
+          <div id="evidenceFiles">
+          </div>
+        </div>
+      </aside>
+
+      <main class="reader">
+        <article class="article">
+          <section class="demo-panel">
+            <h2>先用一次：本地工程热读</h2>
+            <form class="demo-grid" id="analyzeForm">
+              <div class="field">
+                <label for="projectPathInput">项目路径</label>
+                <input id="projectPathInput" value="/Users/luckyxian/Documents/Codex/2026-07-05/gu/ai-project-reader-learning">
+              </div>
+              <div class="field">
+                <label for="learningGoalInput">这次阅读目标</label>
+                <input id="learningGoalInput" value="我想快速知道这个项目怎么跑、怎么读、下一步怎么建设">
+              </div>
+              <button class="primary-action" id="analyzeButton" type="submit">分析本地项目</button>
+            </form>
+            <div class="status-line" id="demoStatus">启动后端后，点“分析本地项目”，这里会调用真实接口并刷新报告。</div>
+          </section>
+
+          <header class="article-header" id="overview">
+            <div class="eyebrow">
+              <span class="pill good" id="modePill">等待分析</span>
+              <span class="pill">Spring Boot / Spring AI</span>
+              <span class="pill warn">v0 mock</span>
+            </div>
+            <h1 id="reportTitle">工程阅读器：先把项目跑起来，再让 AI 帮你读</h1>
+            <p class="lead" id="reportSummary">当前页面已经不是纯展示稿。它会在本地后端启动后调用接口，用 mock AI 生成第一版结构化阅读报告。</p>
+          </header>
+
+          <section class="read-map">
+            <div class="map-item">
+              <b>先知道它做什么</b>
+              <span>它帮助团队理解系统运行状态，不是普通业务应用。</span>
+            </div>
+            <div class="map-item">
+              <b>再知道数据怎么流</b>
+              <span>数据从 agent 采集，进入 server，再被查询和展示。</span>
+            </div>
+            <div class="map-item">
+              <b>最后看怎么运行</b>
+              <span>先跑官方 demo 或最小部署，再回头看源码。</span>
+            </div>
+          </section>
+
+          <section class="section" id="run">
+            <h2>怎么最快跑起来</h2>
+            <ol id="demoPlanList">
+              <li>启动 Spring Boot 后端。</li>
+              <li>打开这个 H5 页面。</li>
+              <li>输入本地项目路径，点分析。</li>
+              <li>看报告是否能指导下一步阅读。</li>
+            </ol>
+            <pre id="runCommand">mvn spring-boot:run</pre>
+          </section>
+
+          <section class="section" id="flow">
+            <h2>端到端链路</h2>
+            <div class="steps">
+              <div class="step">
+                <b>1</b>
+                <div>
+                  <strong>Agent 采集数据</strong>
+                  <span>部署在节点上，采集网络、系统调用、应用和资源数据。</span>
+                </div>
+              </div>
+              <div class="step">
+                <b>2</b>
+                <div>
+                  <strong>数据进入后端</strong>
+                  <span>Server 接收和处理采集数据，做清洗、聚合和存储。</span>
+                </div>
+              </div>
+              <div class="step">
+                <b>3</b>
+                <div>
+                  <strong>查询和分析</strong>
+                  <span>用户通过 UI、API 或查询层查看链路、指标和事件。</span>
+                </div>
+              </div>
+              <div class="step">
+                <b>4</b>
+                <div>
+                  <strong>定位问题</strong>
+                  <span>最终目标是回答“哪里慢、哪里断、谁影响了谁”。</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="files">
+            <h2>第一次应该读哪些文件</h2>
+            <ul id="readingPathList">
+              <li><strong>README.md：</strong>确认项目定位、运行方式和官方推荐路径。</li>
+              <li><strong>pom.xml：</strong>确认后端依赖和 Spring AI 接入方式。</li>
+              <li><strong>src/main/java：</strong>沿 Controller、Service、AiGateway 看主链路。</li>
+            </ul>
+          </section>
+
+          <section class="section" id="risks">
+            <h2>今天先不要深挖什么</h2>
+            <div id="riskList">
+              <p>不要一上来重构页面或接真实模型。先确认本地路径输入、扫描、mock AI 报告、问答这条链路能跑通。</p>
+            </div>
+          </section>
+        </article>
+      </main>
+
+      <aside class="qa">
+        <div class="panel-head">
+          <h2>项目问答</h2>
+          <p>阅读器先给说明书；问答只负责补充解释和继续追问。</p>
+        </div>
+        <div class="qa-scope" id="qaScope">
+          <span class="scope-chip">README.md</span>
+          <span class="scope-chip">pom.xml</span>
+          <span class="scope-chip">src/main/java</span>
+        </div>
+        <div class="messages" id="messages">
+          <div class="msg user">
+            如果我是第一次接手这个项目，今天只看 30 分钟，应该怎么看？
+          </div>
+          <div class="msg">
+            <strong>短答案</strong>
+            先把后端启动起来，再从 Controller、Service、AiGateway 看一遍输入到输出的链路。
+            <small>依据：README.md、pom.xml、src/main/java</small>
+          </div>
+          <div class="msg">
+            <strong>下一步建议</strong>
+            先用这个页面跑一遍，再决定下一步是接 Spring AI 真实模型，还是改报告结构。
+          </div>
+          <div class="quick">
+            <button type="button" data-question="这个项目最小 demo 怎么跑？">这个项目最小 demo 怎么跑？</button>
+            <button type="button" data-question="哪些文件决定主链路？">哪些文件决定主链路？</button>
+            <button type="button" data-question="如果我要二次开发，先改哪里？">如果我要二次开发，先改哪里？</button>
+          </div>
+        </div>
+        <form class="composer" id="questionForm">
+          <textarea id="questionInput" aria-label="继续提问">如果我是第一次接手这个项目，今天只看 30 分钟，应该怎么看？</textarea>
+          <button type="submit">继续问</button>
+        </form>
+      </aside>
+    </div>
+  </div>
+  <script>
+    const apiBase = "http://localhost:8080/api/project-reading";
+    const projectPathInput = document.querySelector("#projectPathInput");
+    const learningGoalInput = document.querySelector("#learningGoalInput");
+    const demoStatus = document.querySelector("#demoStatus");
+    const statusText = document.querySelector("#statusText");
+    const projectNameText = document.querySelector("#projectNameText");
+    const reportTitle = document.querySelector("#reportTitle");
+    const reportSummary = document.querySelector("#reportSummary");
+    const modePill = document.querySelector("#modePill");
+    const evidenceFiles = document.querySelector("#evidenceFiles");
+    const readingPathList = document.querySelector("#readingPathList");
+    const demoPlanList = document.querySelector("#demoPlanList");
+    const riskList = document.querySelector("#riskList");
+    const qaScope = document.querySelector("#qaScope");
+    const messages = document.querySelector("#messages");
+    const questionInput = document.querySelector("#questionInput");
+    const topQuestionInput = document.querySelector("#topQuestionInput");
+
+    function setStatus(text, failed = false) {
+      demoStatus.textContent = text;
+      statusText.textContent = text;
+      demoStatus.style.color = failed ? "#b91c1c" : "var(--muted)";
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function postJson(path, body) {
+      const response = await fetch(`${apiBase}${path}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+      if (!response.ok) {
+        const detail = await response.text();
+        throw new Error(detail || `HTTP ${response.status}`);
+      }
+
+      return response.json();
+    }
+
+    function renderReport(report) {
+      projectNameText.textContent = report.projectName || "本地项目";
+      reportTitle.textContent = `${report.projectName || "本地项目"} 阅读报告`;
+      reportSummary.textContent = report.summary || "后端返回了报告，但 summary 为空。";
+      modePill.textContent = "已生成阅读地图";
+
+      const files = report.readingPath || [];
+      evidenceFiles.innerHTML = files.map(file => `
+        <div class="file-row">
+          <strong>${escapeHtml(file.path)}</strong>
+          <span>${escapeHtml(file.reason)}</span>
+        </div>
+      `).join("");
+
+      readingPathList.innerHTML = files.map(file => `
+        <li><strong>${escapeHtml(file.path)}：</strong>${escapeHtml(file.reason)}</li>
+      `).join("") || "<li>暂时没有返回推荐文件。</li>";
+
+      demoPlanList.innerHTML = (report.demoPlan || []).map(step => `
+        <li><strong>${escapeHtml(step.name)}：</strong>${escapeHtml(step.description)}</li>
+      `).join("") || "<li>暂时没有返回 demo 步骤。</li>";
+
+      riskList.innerHTML = (report.risks || []).map(risk => `
+        <p><strong>${escapeHtml(risk.risk)}：</strong>${escapeHtml(risk.mitigation)}</p>
+      `).join("") || "<p>暂时没有返回风险提示。</p>";
+
+      qaScope.innerHTML = files.slice(0, 5).map(file => `
+        <span class="scope-chip">${escapeHtml(file.path)}</span>
+      `).join("") || '<span class="scope-chip">README.md</span>';
+
+      appendAssistant("下一步建议", report.nextAction || "先按报告推荐文件读一遍，再问一个具体问题。", files.map(file => file.path));
+    }
+
+    function appendUser(text) {
+      messages.insertAdjacentHTML("beforeend", `<div class="msg user">${escapeHtml(text)}</div>`);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function appendAssistant(title, text, files = []) {
+      const evidence = files.length ? `<small>依据：${escapeHtml(files.join("、"))}</small>` : "";
+      messages.insertAdjacentHTML("beforeend", `
+        <div class="msg">
+          <strong>${escapeHtml(title)}</strong>
+          ${escapeHtml(text)}
+          ${evidence}
+        </div>
+      `);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    async function analyzeProject() {
+      const projectPath = projectPathInput.value.trim();
+      const learningGoal = learningGoalInput.value.trim();
+      if (!projectPath || !learningGoal) {
+        setStatus("项目路径和阅读目标都要填。", true);
+        return;
+      }
+
+      setStatus("正在调用本地后端分析项目...");
+      try {
+        const report = await postJson("/analyze-local", { projectPath, learningGoal });
+        renderReport(report);
+        setStatus("分析完成。你现在看到的是后端接口返回的 mock AI 报告。");
+      } catch (error) {
+        setStatus(`调用失败：${error.message}。先确认后端是否已启动在 8080 端口。`, true);
+      }
+    }
+
+    async function askProject(question) {
+      const projectPath = projectPathInput.value.trim();
+      if (!projectPath || !question.trim()) {
+        setStatus("提问前需要项目路径和问题。", true);
+        return;
+      }
+
+      appendUser(question);
+      setStatus("正在向本地后端提问...");
+      try {
+        const answer = await postJson("/ask", { projectPath, question });
+        appendAssistant("短答案", answer.shortAnswer, answer.relatedFiles || []);
+        if (answer.nextReadAction) {
+          appendAssistant("下一步建议", answer.nextReadAction);
+        }
+        setStatus("问答完成。");
+      } catch (error) {
+        appendAssistant("调用失败", `没有拿到回答：${error.message}`);
+        setStatus(`问答失败：${error.message}`, true);
+      }
+    }
+
+    document.querySelector("#analyzeForm").addEventListener("submit", event => {
+      event.preventDefault();
+      analyzeProject();
+    });
+
+    document.querySelector("#reanalyzeButton").addEventListener("click", analyzeProject);
+
+    document.querySelector("#questionForm").addEventListener("submit", event => {
+      event.preventDefault();
+      askProject(questionInput.value);
+    });
+
+    document.querySelector("#topQuestionForm").addEventListener("submit", event => {
+      event.preventDefault();
+      askProject(topQuestionInput.value);
+    });
+
+    document.querySelectorAll("[data-question]").forEach(button => {
+      button.addEventListener("click", () => {
+        questionInput.value = button.dataset.question;
+        askProject(button.dataset.question);
+      });
+    });
+
+    document.querySelector("#exportButton").addEventListener("click", () => {
+      const content = [
+        `# ${reportTitle.textContent}`,
+        "",
+        reportSummary.textContent,
+        "",
+        "## 第一次应该读哪些文件",
+        ...Array.from(readingPathList.querySelectorAll("li")).map(item => `- ${item.textContent}`),
+        "",
+        "## 怎么最快跑起来",
+        ...Array.from(demoPlanList.querySelectorAll("li")).map(item => `- ${item.textContent}`)
+      ].join("\n");
+      const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "project-reading-report.md";
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
