@@ -311,6 +311,14 @@
       margin: 0 auto;
     }
 
+    .reader-pane {
+      display: block;
+    }
+
+    .reader-pane[hidden] {
+      display: none;
+    }
+
     .article-header {
       margin-bottom: 22px;
       padding-bottom: 18px;
@@ -709,32 +717,34 @@
             <div class="status-line" id="demoStatus">启动后端后，点“分析本地项目”，这里会调用真实接口并刷新报告。</div>
           </section>
 
-          <header class="article-header" id="overview">
-            <div class="eyebrow">
-              <span class="pill good" id="modePill">等待分析</span>
-              <span class="pill">Spring Boot / Spring AI</span>
-              <span class="pill warn">v0 mock</span>
-            </div>
-            <h1 id="reportTitle">工程阅读器：先把项目跑起来，再让 AI 帮你读</h1>
-            <p class="lead" id="reportSummary">当前页面已经不是纯展示稿。它会在本地后端启动后调用接口，用 mock AI 生成第一版结构化阅读报告。</p>
-          </header>
+          <section class="reader-pane" id="overview">
+            <header class="article-header">
+              <div class="eyebrow">
+                <span class="pill good" id="modePill">等待分析</span>
+                <span class="pill">Spring Boot / Spring AI</span>
+                <span class="pill warn">v0 mock</span>
+              </div>
+              <h1 id="reportTitle">工程阅读器：先把项目跑起来，再让 AI 帮你读</h1>
+              <p class="lead" id="reportSummary">当前页面已经不是纯展示稿。它会在本地后端启动后调用接口，用 mock AI 生成第一版结构化阅读报告。</p>
+            </header>
 
-          <section class="read-map">
-            <div class="map-item">
-              <b>先知道它做什么</b>
-              <span>它帮助团队理解系统运行状态，不是普通业务应用。</span>
-            </div>
-            <div class="map-item">
-              <b>再知道数据怎么流</b>
-              <span>数据从 agent 采集，进入 server，再被查询和展示。</span>
-            </div>
-            <div class="map-item">
-              <b>最后看怎么运行</b>
-              <span>先跑官方 demo 或最小部署，再回头看源码。</span>
-            </div>
+            <section class="read-map">
+              <div class="map-item">
+                <b>先知道它做什么</b>
+                <span>它帮助团队理解系统运行状态，不是普通业务应用。</span>
+              </div>
+              <div class="map-item">
+                <b>再知道数据怎么流</b>
+                <span>数据从 agent 采集，进入 server，再被查询和展示。</span>
+              </div>
+              <div class="map-item">
+                <b>最后看怎么运行</b>
+                <span>先跑官方 demo 或最小部署，再回头看源码。</span>
+              </div>
+            </section>
           </section>
 
-          <section class="section" id="run">
+          <section class="section reader-pane" id="run" hidden>
             <h2>怎么最快跑起来</h2>
             <ol id="demoPlanList">
               <li>启动 Spring Boot 后端。</li>
@@ -745,7 +755,7 @@
             <pre id="runCommand">mvn spring-boot:run</pre>
           </section>
 
-          <section class="section" id="flow">
+          <section class="section reader-pane" id="flow" hidden>
             <h2>端到端链路</h2>
             <div class="steps">
               <div class="step">
@@ -779,7 +789,7 @@
             </div>
           </section>
 
-          <section class="section" id="files">
+          <section class="section reader-pane" id="files" hidden>
             <h2>第一次应该读哪些文件</h2>
             <ul id="readingPathList">
               <li><strong>README.md：</strong>确认项目定位、运行方式和官方推荐路径。</li>
@@ -788,7 +798,7 @@
             </ul>
           </section>
 
-          <section class="section" id="risks">
+          <section class="section reader-pane" id="risks" hidden>
             <h2>今天先不要深挖什么</h2>
             <div id="riskList">
               <p>不要一上来重构页面或接真实模型。先确认本地路径输入、扫描、mock AI 报告、问答这条链路能跑通。</p>
@@ -853,7 +863,7 @@
     const topQuestionInput = document.querySelector("#topQuestionInput");
     const reader = document.querySelector(".reader");
     const tocLinks = Array.from(document.querySelectorAll(".toc a"));
-    const readableSections = tocLinks
+    const readerPanes = tocLinks
       .map(link => document.querySelector(link.getAttribute("href")))
       .filter(Boolean);
 
@@ -879,15 +889,18 @@
       });
     }
 
-    function jumpToSection(targetId) {
-      const target = document.querySelector(`#${targetId}`);
+    function showPane(targetId) {
+      const target = readerPanes.find(section => section.id === targetId);
       if (!target) {
         return;
       }
 
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      readerPanes.forEach(section => {
+        section.hidden = section.id !== targetId;
+      });
       activateToc(targetId);
       history.replaceState(null, "", `#${targetId}`);
+      reader.scrollTop = 0;
     }
 
     async function postJson(path, body) {
@@ -1044,31 +1057,12 @@
       link.addEventListener("click", event => {
         event.preventDefault();
         const targetId = link.getAttribute("href").slice(1);
-        jumpToSection(targetId);
+        showPane(targetId);
       });
     });
 
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(entries => {
-        const visible = entries
-          .filter(entry => entry.isIntersecting)
-          .sort((left, right) => right.intersectionRatio - left.intersectionRatio)[0];
-
-        if (visible) {
-          activateToc(visible.target.id);
-        }
-      }, {
-        root: reader,
-        threshold: [0.35, 0.6]
-      });
-
-      readableSections.forEach(section => observer.observe(section));
-    }
-
     const initialTargetId = location.hash ? location.hash.slice(1) : "overview";
-    if (document.querySelector(`#${initialTargetId}`)) {
-      activateToc(initialTargetId);
-    }
+    showPane(document.querySelector(`#${initialTargetId}`) ? initialTargetId : "overview");
   </script>
 </body>
 </html>
