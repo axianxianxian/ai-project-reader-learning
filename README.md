@@ -73,6 +73,23 @@ v0.2 开始加入“自动读码”的第一块能力：
 - 可以为每一层写测试。
 - 后面替换成 Spring AI 时，只需要替换 `AiGateway` 实现。
 
+当前项目已经有两个 `AiGateway` 实现：
+
+- `MockAiGateway`：默认启用，不需要 API Key，适合本地学习和测试。
+- `SpringAiGateway`：真实 Spring AI 实现，通过 `ChatClient` 调模型，并把结果转成结构化对象。
+
+切换方式：
+
+```properties
+spring.profiles.active=spring-ai
+```
+
+同时用环境变量提供模型 key：
+
+```text
+OPENAI_API_KEY=your_key
+```
+
 ## 运行方式
 
 ```bash
@@ -155,7 +172,7 @@ prototypes/learning/hot-read-assistant-v0.html
 
 1. v0.1：Mock AI 跑通项目阅读报告。
 2. v0.2：本地项目扫描 + 基于上下文问答。
-3. v0.3：接入 Spring AI ChatClient。
-4. v0.4：加入本地知识规则和 tool calling。
+3. v0.3：打磨 Spring AI structured output 的稳定性。
+4. v0.4：把 `LocalProjectScanner` 做成 tool calling 工具。
 5. v0.5：加入简单 RAG，支持按项目文档检索。
 6. v0.6：沉淀成作品集说明和面试讲述版本。

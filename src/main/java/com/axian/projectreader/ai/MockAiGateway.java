@@ -9,11 +9,13 @@ import com.axian.projectreader.model.ProjectReadingReport;
 import com.axian.projectreader.model.RiskNote;
 import com.axian.projectreader.model.SourceFileContext;
 import com.axian.projectreader.model.StepAction;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@ConditionalOnProperty(name = "project-reader.ai.provider", havingValue = "mock", matchIfMissing = true)
 public class MockAiGateway implements AiGateway {
 
     @Override
