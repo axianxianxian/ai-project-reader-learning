@@ -8,6 +8,9 @@
 
 - `01-product-idea-card.md`：产品想法和竞品参考
 - `02-this-week-prototype.md`：本周要做出的产品样板
+- `03-product-definition-v2.md`：低门槛工程热读工作台定义
+- `04-prd-v1.md`：PRD v1
+- `05-future-demo.md`：未来效果 Demo
 
 ## architecture
 
@@ -30,3 +33,11 @@
 交接和阶段记录。
 
 - `2026-07-17.md`：阶段交接卡
+
+## planning
+
+排期、风险和项目重点。
+
+- `01-delivery-plan.md`：两周排期和一个月目标
+- `02-risk-register.md`：风险表
+- `03-project-focus.md`：项目重点和取舍
