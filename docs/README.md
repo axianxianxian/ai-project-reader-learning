@@ -27,6 +27,7 @@
 - `01-goal.md`：学习目标
 - `02-ten-day-plan.md`：10 天计划
 - `03-learning-index-and-next-mvp.md`：学习索引和下一步 MVP
+- `04-ai-engineering-reference-map.md`：AI 工程转型参考地图
 
 ## handoff
 
