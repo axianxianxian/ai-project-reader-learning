@@ -1,13 +1,14 @@
-package com.axian.projectreader.app;
+package com.axian.projectreader.service;
 
 import com.axian.projectreader.ai.MockAiGateway;
 import com.axian.projectreader.ai.ProjectReadingPromptBuilder;
-import com.axian.projectreader.api.LocalProjectRequest;
-import com.axian.projectreader.api.ProjectQuestionRequest;
-import com.axian.projectreader.api.ProjectReadingRequest;
-import com.axian.projectreader.domain.ProjectContext;
-import com.axian.projectreader.domain.ProjectQuestionAnswer;
-import com.axian.projectreader.domain.ProjectReadingReport;
+import com.axian.projectreader.dto.LocalProjectRequest;
+import com.axian.projectreader.dto.ProjectQuestionRequest;
+import com.axian.projectreader.dto.ProjectReadingRequest;
+import com.axian.projectreader.model.ProjectContext;
+import com.axian.projectreader.model.ProjectQuestionAnswer;
+import com.axian.projectreader.model.ProjectReadingReport;
+import com.axian.projectreader.scanner.LocalProjectScanner;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

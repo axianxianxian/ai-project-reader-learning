@@ -1,4 +1,4 @@
-package com.axian.projectreader.api;
+package com.axian.projectreader.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

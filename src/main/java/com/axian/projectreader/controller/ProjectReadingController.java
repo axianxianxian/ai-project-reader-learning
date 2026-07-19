@@ -1,9 +1,12 @@
-package com.axian.projectreader.api;
+package com.axian.projectreader.controller;
 
-import com.axian.projectreader.app.ProjectReadingService;
-import com.axian.projectreader.domain.ProjectContext;
-import com.axian.projectreader.domain.ProjectQuestionAnswer;
-import com.axian.projectreader.domain.ProjectReadingReport;
+import com.axian.projectreader.dto.LocalProjectRequest;
+import com.axian.projectreader.dto.ProjectQuestionRequest;
+import com.axian.projectreader.dto.ProjectReadingRequest;
+import com.axian.projectreader.model.ProjectContext;
+import com.axian.projectreader.model.ProjectQuestionAnswer;
+import com.axian.projectreader.model.ProjectReadingReport;
+import com.axian.projectreader.service.ProjectReadingService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

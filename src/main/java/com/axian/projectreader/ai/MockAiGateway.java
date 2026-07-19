@@ -1,14 +1,14 @@
 package com.axian.projectreader.ai;
 
-import com.axian.projectreader.api.ProjectQuestionRequest;
-import com.axian.projectreader.api.ProjectReadingRequest;
-import com.axian.projectreader.domain.FileToRead;
-import com.axian.projectreader.domain.ProjectContext;
-import com.axian.projectreader.domain.ProjectQuestionAnswer;
-import com.axian.projectreader.domain.ProjectReadingReport;
-import com.axian.projectreader.domain.RiskNote;
-import com.axian.projectreader.domain.SourceFileContext;
-import com.axian.projectreader.domain.StepAction;
+import com.axian.projectreader.dto.ProjectQuestionRequest;
+import com.axian.projectreader.dto.ProjectReadingRequest;
+import com.axian.projectreader.model.FileToRead;
+import com.axian.projectreader.model.ProjectContext;
+import com.axian.projectreader.model.ProjectQuestionAnswer;
+import com.axian.projectreader.model.ProjectReadingReport;
+import com.axian.projectreader.model.RiskNote;
+import com.axian.projectreader.model.SourceFileContext;
+import com.axian.projectreader.model.StepAction;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

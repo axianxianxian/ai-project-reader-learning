@@ -1,4 +1,4 @@
-package com.axian.projectreader.domain;
+package com.axian.projectreader.model;
 
 public record FileToRead(
         String path,

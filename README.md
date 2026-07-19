@@ -107,10 +107,12 @@ curl -X POST http://localhost:8080/api/project-reading/ask \
 
 ```text
 src/main/java/com/axian/projectreader
-├── api        # Controller 和请求响应
-├── app        # 应用服务，编排业务流程
-├── ai         # AI Gateway，后续接 Spring AI
-└── domain     # 结构化输出模型
+├── controller # HTTP 接口入口，只接收请求和返回结果
+├── dto        # 请求参数对象，比如项目路径、问题、学习目标
+├── service    # 业务编排，决定先扫描、再组 prompt、再调用 AI
+├── scanner    # 本地项目扫描，读取 README、构建文件、目录和源码片段
+├── ai         # AI Gateway 和 prompt 组织，后续接 Spring AI
+└── model      # 结构化结果模型，比如阅读报告、问答结果、风险提示
 
 docs
 ├── product       # 对外产品资料

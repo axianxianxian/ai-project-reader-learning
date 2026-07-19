@@ -1,9 +1,9 @@
 package com.axian.projectreader.ai;
 
-import com.axian.projectreader.api.ProjectQuestionRequest;
-import com.axian.projectreader.api.ProjectReadingRequest;
-import com.axian.projectreader.domain.ProjectContext;
-import com.axian.projectreader.domain.SourceFileContext;
+import com.axian.projectreader.dto.ProjectQuestionRequest;
+import com.axian.projectreader.dto.ProjectReadingRequest;
+import com.axian.projectreader.model.ProjectContext;
+import com.axian.projectreader.model.SourceFileContext;
 import org.springframework.stereotype.Component;
 
 @Component

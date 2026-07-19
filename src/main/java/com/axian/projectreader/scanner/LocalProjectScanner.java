@@ -1,7 +1,7 @@
-package com.axian.projectreader.app;
+package com.axian.projectreader.scanner;
 
-import com.axian.projectreader.domain.ProjectContext;
-import com.axian.projectreader.domain.SourceFileContext;
+import com.axian.projectreader.model.ProjectContext;
+import com.axian.projectreader.model.SourceFileContext;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
