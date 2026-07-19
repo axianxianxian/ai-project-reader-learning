@@ -43,3 +43,9 @@
 - `02-risk-register.md`：风险表
 - `03-project-focus.md`：项目重点和取舍
 - `04-30-day-public-build-plan.md`：30 天公开构建计划和每日发布主线
+
+## public
+
+公开构建发布草稿。
+
+- `day-01-ai-project-reader.md`：第 1 天小红书和 X 草稿
